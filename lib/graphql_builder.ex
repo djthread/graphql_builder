@@ -5,22 +5,18 @@ defmodule GraphqlBuilder do
 
   alias GraphqlBuilder.Query
 
-  @spec query(Query.t()) :: String.t()
   def query(query) do
     build(query_keyword(), query)
   end
 
-  @spec mutation(Query.t()) :: String.t()
   def mutation(query) do
     build(mutation_keyword(), query)
   end
 
-  @spec subscription(Query.t()) :: String.t()
   def subscription(query) do
     build(subscription_keyword(), query)
   end
 
-  @spec build(String.t(), Query.t()) :: String.t()
   def build(type_keyword, %Query{operation: operation, fields: fields, variables: variables}) do
     indent_level = 2
 
@@ -34,22 +30,18 @@ defmodule GraphqlBuilder do
     |> Enum.join()
   end
 
-  @spec query_keyword :: String.t()
   defp query_keyword do
     "query {\n"
   end
 
-  @spec mutation_keyword :: String.t()
   defp mutation_keyword do
     "mutation {\n"
   end
 
-  @spec subscription_keyword :: String.t()
   defp subscription_keyword do
     "subscription {\n"
   end
 
-  @spec operation_and_variables(atom, [atom], keyword) :: String.t()
   defp operation_and_variables(operation, variables, opts \\ []) do
     indent_level = Keyword.get(opts, :indent_level, 2)
 
@@ -59,12 +51,10 @@ defmodule GraphqlBuilder do
       " {\n"
   end
 
-  @spec indented_closing_brace(integer) :: String.t()
   defp indented_closing_brace(indent_level) do
     indent(indent_level) <> "}\n"
   end
 
-  @spec query_fields([:atom], integer, keyword) :: String.t()
   defp query_fields(fields, indent_level, opts \\ []) do
     eol =
       if Keyword.get(opts, :newline, false) do
@@ -84,7 +74,6 @@ defmodule GraphqlBuilder do
       eol
   end
 
-  @spec process_nested_field(atom, {String.t(), integer}) :: {String.t(), integer}
   defp process_nested_field(elem, {acc, indent_level}) when is_atom(elem) do
     {acc <> indent(indent_level) <> "#{elem},\n", indent_level}
   end
@@ -100,7 +89,6 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
-  @spec variable_list([atom] | nil) :: String.t()
   defp variable_list(nil) do
     ""
   end
@@ -112,7 +100,6 @@ defmodule GraphqlBuilder do
     |> (fn list -> "(#{list})" end).()
   end
 
-  @spec variable({atom, atom | keyword}) :: String.t()
   defp variable({key, value}) do
     cond do
       is_binary(value) ->
@@ -131,11 +118,9 @@ defmodule GraphqlBuilder do
     end
   end
 
-  @spec quote_if_binary(any) :: any
   defp quote_if_binary(string) when is_binary(string), do: "\"#{string}\""
   defp quote_if_binary(not_string), do: not_string
 
-  @spec sub_variable_list([atom | keyword]) :: String.t()
   defp sub_variable_list(variables) do
     variables
     |> Enum.map(&variable/1)
@@ -143,7 +128,6 @@ defmodule GraphqlBuilder do
     |> (fn list -> "{#{list}}" end).()
   end
 
-  @spec indent(integer) :: String.t()
   defp indent(n) do
     String.duplicate(" ", n)
   end

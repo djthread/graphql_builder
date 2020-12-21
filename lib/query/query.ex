@@ -3,11 +3,7 @@ defmodule GraphqlBuilder.Query do
   Data structure used to represent the data used to generate query or mutation data.
   """
 
-  @type t :: %__MODULE__{
-          operation: atom,
-          fields: [atom],
-          variables: [atom]
-        }
+  @type t :: %__MODULE__{}
 
   defstruct [
     :operation,
